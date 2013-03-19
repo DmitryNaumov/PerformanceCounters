@@ -37,6 +37,11 @@ namespace PerformanceCounters
 			_perfCounter.RawValue = 0;
 		}
 
+		public float NextValue()
+		{
+			return _perfCounter.NextValue();
+		}
+
 		void IDisposable.Dispose()
 		{
 			_perfCounter.Dispose();

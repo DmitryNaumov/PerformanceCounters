@@ -1,8 +1,6 @@
 namespace PerformanceCounters
 {
-	using System;
-
-	public interface IPerformanceCounter : IDisposable
+	public interface IPerformanceCounter : IReadOnlyPerformanceCounter
 	{
 		void Increment();
 

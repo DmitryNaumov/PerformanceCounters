@@ -18,6 +18,11 @@ namespace PerformanceCounters
 		{
 		}
 
+		public float NextValue()
+		{
+			return default(float);
+		}
+
 		public void Dispose()
 		{
 		}

@@ -55,13 +55,15 @@ namespace PerformanceCounters
 			}
 		}
 
-		internal static IPerformanceCounter GetInstance(string categoryName, string counterName)
+		internal static IPerformanceCounter GetInstance(string categoryName, string counterName, PerformanceCounterCategoryType categoryType, bool readOnly)
 		{
 			try
 			{
 				if (PerformanceCounterCategory.Exists(categoryName) && PerformanceCounterCategory.CounterExists(counterName, categoryName))
 				{
-					var counter = new PerformanceCounter(categoryName, counterName, false);
+					var instanceName = categoryType == PerformanceCounterCategoryType.SingleInstance ? string.Empty : Process.GetCurrentProcess().ProcessName;
+
+					var counter = new PerformanceCounter(categoryName, counterName, instanceName, readOnly);
 					return new PerformanceCounterProxy(counter);
 				}
 			}

@@ -34,7 +34,7 @@ namespace PerformanceCounters
 					throw new InvalidProgramException();
 				}
 
-				var counter = PerformanceCounterFactory.GetInstance(categoryName, counterName);
+				var counter = PerformanceCounterFactory.GetInstance(categoryName, counterName, attribute.CategoryType, propertyInfo.PropertyType == typeof(IReadOnlyPerformanceCounter));
 				_counters.Add(getMethod, counter);
 
 				var setMethod = propertyInfo.GetSetMethod();
