@@ -1,13 +1,16 @@
 namespace PerformanceCounters
 {
 	using System;
+	using System.Collections.Generic;
 	using System.Diagnostics;
 	using Castle.DynamicProxy;
 
-	public sealed class PerformanceCounterFactory
+	public static class PerformanceCounterFactory
 	{
 		private static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
 		private static readonly NullPerformanceCounter NullInstance = new NullPerformanceCounter();
+
+		private static readonly Dictionary<Type, IPerformanceCounterSet> _counters = new Dictionary<Type, IPerformanceCounterSet>();
 
 		public static PerformanceCounterInstaller GetInstallerFor<T>() where T : IPerformanceCounterSet
 		{
@@ -39,7 +42,17 @@ namespace PerformanceCounters
 
 		public static T GetCounters<T>() where T : class, IPerformanceCounterSet
 		{
-			return ProxyGenerator.CreateInterfaceProxyWithoutTarget<T>(new PerformanceCountersInterceptor<T>());
+			lock (_counters)
+			{
+				IPerformanceCounterSet counterSet;
+				if (!_counters.TryGetValue(typeof(T), out counterSet))
+				{
+					counterSet = ProxyGenerator.CreateInterfaceProxyWithoutTarget<T>(new PerformanceCountersInterceptor<T>());
+					_counters.Add(typeof(T), counterSet);
+				}
+
+				return (T) counterSet;
+			}
 		}
 
 		internal static IPerformanceCounter GetInstance(string categoryName, string counterName)
