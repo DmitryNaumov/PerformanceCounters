@@ -24,9 +24,11 @@
 			Listen();
 		}
 
-		private void Listen()
+		private async void Listen()
 		{
-			_listener.GetContextAsync().ContinueWith(task => Accept(task.Result));
+			var context = await _listener.GetContextAsync();
+
+			Accept(context);
 		}
 
 		private void Accept(HttpListenerContext context)

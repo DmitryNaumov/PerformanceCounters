@@ -2,8 +2,6 @@
 {
 	using System.IO;
 	using System.Net;
-	using System.Reflection;
-	using System.Text;
 
 	internal sealed class HttpService
 	{
@@ -31,7 +29,9 @@
 
 			if (System.String.Compare(request.RawUrl.TrimEnd('/'), "/web", System.StringComparison.OrdinalIgnoreCase) == 0)
 			{
-				path = Path.Combine(_rootPath, @"web/index.html");
+				response.Redirect("/web/index.html");
+				response.Close();
+				return;
 			}
 
 			if (!File.Exists(path))
@@ -43,14 +43,33 @@
 			{
 				using (var writer = new StreamWriter(response.OutputStream))
 				{
-					var content = File.ReadAllText(path);
-					writer.Write(content);
+					using (var fileStream = File.OpenRead(path))
+					{
+						response.ContentType = GetContentType(path);
+						response.ContentLength64 = fileStream.Length;
+						response.StatusCode = (int)HttpStatusCode.OK;
 
-					response.ContentType = "text/html";
-					response.ContentLength64 = Encoding.UTF8.GetByteCount(content);
-					response.StatusCode = (int) HttpStatusCode.OK;
+						fileStream.CopyTo(response.OutputStream);
+					}
 				}
 			}
+		}
+
+		private string GetContentType(string path)
+		{
+			var extension = Path.GetExtension(path);
+			switch (extension)
+			{
+				case ".htm":
+				case ".html":
+					return "text/html";
+				case ".css":
+					return "text/css";
+				case ".js":
+					return "application/javascript";
+			}
+
+			return string.Empty;
 		}
 	}
 }
