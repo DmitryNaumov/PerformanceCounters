@@ -3,7 +3,7 @@
 <head>
     <title>Performance Counters</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
+
     <link href="bootstrap.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link href="bootstrap-responsive.css" rel="stylesheet">
@@ -30,10 +30,22 @@
 
         <div class="container">
             <h1>Under Construction</h1>
+
+            <div class="chart-container">
+                <div class="chart-title" style="max-width: 300px">
+                    "Sample Counter"
+                </div>
+                <div class="rickshaw_graph" id="chart"></div>
+            </div>
+            
+            <div class="error" style="display: none"></div>
             <div id="push"></div>
+
         </div>
+        
+<!--        <div class="error" style="display: none;"></div>-->
     </div>
-    
+
     <div id="footer">
         <div class="container">
             <div class="muted credit">
@@ -41,7 +53,43 @@
             </div>
         </div>
     </div>
-    
+
     <script src="bootstrap.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.0.1/d3.v3.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/rickshaw/1.1.0/rickshaw.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+    <script>
+
+        var data = [{ x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 17 }, { x: 3, y: 42 }];
+
+        var graph = new Rickshaw.Graph({
+            element: document.querySelector("#chart"),
+            width: 580,
+            height: 250,
+            series: [{
+                color: 'steelblue',
+                data: data
+            }]
+        });
+
+        graph.render();
+
+        $.ajax("/stats?metadata=true", {
+            headers: {
+                Accept: "application/json"
+            },
+            success: success,
+            error: error
+        });
+
+        function success(stats) {
+        }
+
+        function error(xhr, status, err) {
+            $(".error").text(xhr.statusText).show();
+        };
+
+    </script>
 </body>
 </html>
