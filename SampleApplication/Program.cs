@@ -3,6 +3,7 @@
 	using System;
 	using System.IO;
 	using System.Reflection;
+	using System.Web.Http;
 	using System.Web.Http.SelfHost;
 	using PerformanceCounters;
 
@@ -23,6 +24,10 @@
 
 			var config = new HttpSelfHostConfiguration("http://localhost:2707/");
 			config.MessageHandlers.Add(new StaticFileHandler(Path.Combine(rootPath, "web")));
+			config.Routes.MapHttpRoute(
+				name: "API Default",
+				routeTemplate: "api/{controller}/{action}",
+				defaults: new { action = "get" });
 
 			using (var server = new HttpSelfHostServer(config))
 			{

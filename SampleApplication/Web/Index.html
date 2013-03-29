@@ -75,7 +75,7 @@
 
         graph.render();
 
-        $.ajax("/stats?metadata=true", {
+        $.ajax("/api/stats/GetMetadata", {
             headers: {
                 Accept: "application/json"
             },
