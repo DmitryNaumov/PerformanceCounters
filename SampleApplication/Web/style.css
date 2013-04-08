@@ -46,7 +46,7 @@ body
 /* Custom page CSS */
 /* Not required for template or sticky footer method. */
 
-#wrap > .container
+#wrapper > .container
 {
     padding-top: 60px;
 }

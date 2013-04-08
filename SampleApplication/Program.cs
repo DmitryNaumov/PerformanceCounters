@@ -3,6 +3,7 @@
 	using System;
 	using System.IO;
 	using System.Reflection;
+	using System.Threading;
 	using System.Web.Http;
 	using System.Web.Http.SelfHost;
 	using PerformanceCounters;
@@ -34,7 +35,21 @@
 				server.OpenAsync().Wait();
 
 				Console.WriteLine("Press any key to exit...");
-				Console.ReadKey();
+
+				var random = new Random();
+				while (true)
+				{
+					var n = random.Next(100);
+					while (n-- > 0)
+					{
+						if (Console.KeyAvailable)
+							return;
+
+						var dummyString = n.ToString();
+					}
+
+					Thread.Sleep(100);
+				}
 			}
 		}
 	}

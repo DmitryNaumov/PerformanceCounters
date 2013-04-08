@@ -7,9 +7,11 @@
     <link href="bootstrap.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link href="bootstrap-responsive.css" rel="stylesheet">
+    <link href="rickshaw.min.css" rel="stylesheet" />
+    <link href="d3.css" rel="stylesheet" />
 </head>
 <body>
-    <div id="wrap">
+    <div id="wrapper">
         <div class="navbar navbar-fixed-top">
             <div class="navbar-inner">
                 <div class="container">
@@ -17,10 +19,10 @@
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li class="active">
-                                <a href="#sample">Sample</a>
+                                <a href="#">Application</a>
                             </li>
                             <li>
-                                <a href="#system">System</a>
+                                <a href="#">System</a>
                             </li>
                         </ul>
                     </div>
@@ -30,22 +32,14 @@
 
         <div class="container">
             <h1>Under Construction</h1>
-
-            <div class="chart-container">
-                <div class="chart-title" style="max-width: 300px">
-                    "Sample Counter"
-                </div>
-                <div class="rickshaw_graph" id="chart"></div>
-            </div>
-            
-            <div class="error" style="display: none"></div>
-            <div id="push"></div>
-
+            <div id="placeholder"></div>
         </div>
-        
-<!--        <div class="error" style="display: none;"></div>-->
+
     </div>
 
+    <div class="error" style="display: none"></div>
+    <div id="push"></div>
+    
     <div id="footer">
         <div class="container">
             <div class="muted credit">
@@ -58,37 +52,58 @@
     <script src="//cdnjs.cloudflare.com/ajax/libs/d3/3.0.1/d3.v3.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/rickshaw/1.1.0/rickshaw.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="charts.js"></script>
 
     <script>
+        $(function() {
+            $.ajax("/api/stats/GetCounters", {
+                headers: {
+                    Accept: "application/json"
+                },
+                success: success,
+                error: error
+            });
 
-        var data = [{ x: 0, y: 40 }, { x: 1, y: 49 }, { x: 2, y: 17 }, { x: 3, y: 42 }];
+            function success(metadata) {
+                setupCharts(metadata);
+                poll();
+            }
 
-        var graph = new Rickshaw.Graph({
-            element: document.querySelector("#chart"),
-            width: 580,
-            height: 250,
-            series: [{
-                color: 'steelblue',
-                data: data
-            }]
+            function error(xhr, status, err) {
+                $(".error").text(xhr.statusText).show();
+            }
+
+            ;
+
+            function setupCharts(metadata) {
+                for (var i in metadata) {
+                    var category = metadata[i];
+                    window.Charts(category);
+                }
+            }
+
+            function poll() {
+                setTimeout(function() {
+                    poll();
+                }, 1000);
+
+                $.ajax("/api/stats/GetCounterData", {
+                    headers: {
+                        Accept: "application/json"
+                    },
+                    success: success,
+                    error: error
+                });
+
+                function success(data) {
+                    $(".error").hide();
+                    $(document).trigger("sample.updateEvent", [data]);
+                }
+
+                function error(xhr, status, err) {
+                }
+            }
         });
-
-        graph.render();
-
-        $.ajax("/api/stats/GetMetadata", {
-            headers: {
-                Accept: "application/json"
-            },
-            success: success,
-            error: error
-        });
-
-        function success(stats) {
-        }
-
-        function error(xhr, status, err) {
-            $(".error").text(xhr.statusText).show();
-        };
 
     </script>
 </body>
