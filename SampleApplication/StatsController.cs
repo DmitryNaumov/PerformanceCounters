@@ -20,17 +20,6 @@ namespace SampleApplication
 				new Category()
 				{
 					Title = "System",
-					Counters = new[]
-					{
-						new Counter
-						{
-							Name = "Process CPU Usage"
-						},
-						new Counter
-						{
-							Name = "Process Memory Usage"
-						},
-					}
 				},
 				new Category()
 				{
@@ -39,8 +28,13 @@ namespace SampleApplication
 			};
 		}
 
-		public Counter[] GetCounters()
+		public Counter[] GetCounters(string categoryName)
 		{
+			if (categoryName != "System")
+			{
+				return new Counter[0];
+			}
+
 			return new []
 			{
 				new Counter
@@ -87,7 +81,6 @@ namespace SampleApplication
 	public class Category
 	{
 		public string Title { get; set; }
-		public Counter[] Counters { get; set; }
 	}
 
 	public class Counter

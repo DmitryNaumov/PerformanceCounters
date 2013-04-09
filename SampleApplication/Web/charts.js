@@ -1,5 +1,82 @@
 ﻿$(function () {
-    window.Charts = function (counterIndex, title) {
+    var currentCategory = {};
+    
+    $.ajax("/api/stats/GetCategories", {
+        headers: {
+            Accept: "application/json"
+        },
+        success: function (categories) {
+            $.each(categories, function (index, category) {
+                var element = ["<li><a class=nav-button href='#", category.Title, "'>", category.Title, "</a></li>"].join("");
+                $('.nav').append(element);
+            });
+
+            $('.nav-button').click(function () {
+                var newCategory = $(this).text();
+                if (newCategory == currentCategory) return;
+
+                $('ul li').removeClass('active');
+                $(this).parent().addClass('active');
+                
+                currentCategory = newCategory;
+                getCounters(currentCategory);
+            });
+
+            $('.nav-button').first().click();
+
+            poll();
+        },
+        error: error
+    });
+
+    function poll() {
+        setTimeout(function () {
+            poll();
+        }, 1000);
+
+        if (!currentCategory) return;
+            
+        $.ajax("/api/stats/GetCounterData", {
+            headers: {
+                Accept: "application/json"
+            },
+            success: success,
+            error: error
+        });
+
+        function success(data) {
+            $(".error").hide();
+            $(document).trigger("sample.updateEvent", [data]);
+        }
+    }
+
+    function getCounters(categoryName) {
+        $.ajax("/api/stats/GetCounters?categoryName=" + categoryName, {
+            headers: {
+                Accept: "application/json"
+            },
+            success: function(metadata) {
+                setupCharts(metadata);
+            },
+            error: error
+        });
+
+        function setupCharts(counters) {
+            var appendToElement = $("#placeholder");
+            appendToElement.empty();
+                
+            for (var i in counters) {
+                var counterName = counters[i].Name;
+                bindCharts(i, counterName);
+            }
+        }
+    }
+
+    function error(xhr, status, err) {
+        $(".error").text(xhr.statusText).show();
+    }
+
+    var bindCharts = function (counterIndex, title) {
 
         var width = 300;
         var height = 100;
@@ -20,12 +97,16 @@
 
             initData(new Date());
 
-            var graph = createGraphInternal(container, seriesData, width, height);
+            var graph = createGraphInternal(container, seriesData);
             $(document).on("sample.updateEvent", function (event, data, timeStamp) {
 
                 timeStamp = timeStamp || new Date();
                 var point = { x: timeStamp.getTime() / 1000, y: data[counterIndex] };
                 seriesData.push(point);
+                
+                if (seriesData.length > maxLength) {
+                    seriesData.shift();
+                }
 
                 graph.update();
             });
@@ -39,7 +120,7 @@
             };
         };
 
-        function createGraphInternal(appendTo, data, width, height) {
+        function createGraphInternal(appendTo, data) {
 
             var graph = new Rickshaw.Graph({
                 element: $('<div class="chart" />').appendTo(appendTo)[0],
