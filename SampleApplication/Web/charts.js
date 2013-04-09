@@ -1,7 +1,6 @@
 ﻿$(function () {
-    window.Charts = function (counter) {
+    window.Charts = function (counterIndex, title) {
 
-        var title = counter.Name;
         var width = 300;
         var height = 100;
         var maxLength = 100;
@@ -25,7 +24,7 @@
             $(document).on("sample.updateEvent", function (event, data, timeStamp) {
 
                 timeStamp = timeStamp || new Date();
-                var point = { x: timeStamp.getTime() / 1000, y: data };
+                var point = { x: timeStamp.getTime() / 1000, y: data[counterIndex] };
                 seriesData.push(point);
 
                 graph.update();

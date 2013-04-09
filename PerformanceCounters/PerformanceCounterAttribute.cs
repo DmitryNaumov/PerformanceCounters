@@ -17,6 +17,11 @@ namespace PerformanceCounters
 			_counterType = counterType;
 		}
 
+		public PerformanceCounterAttribute(string counterName)
+		{
+			_counterName = counterName;
+		}
+
 		public string CounterName{
 
 			get { return _counterName; }

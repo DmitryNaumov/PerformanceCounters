@@ -2,10 +2,18 @@ namespace SampleApplication
 {
 	using System;
 	using System.Web.Http;
+	using PerformanceCounters;
 
 	public sealed class StatsController : ApiController
 	{
-		public Category[] GetMetadata()
+		private readonly ClrMemoryCounters _clrMemoryCounters;
+
+		public StatsController(ClrMemoryCounters clrMemoryCounters)
+		{
+			_clrMemoryCounters = clrMemoryCounters;
+		}
+
+		public Category[] GetCategories()
 		{
 			return new[]
 			{
@@ -37,23 +45,42 @@ namespace SampleApplication
 			{
 				new Counter
 				{
-					Name = "Process CPU Usage"
+					Name = _clrMemoryCounters.GetCounterName(x => x.BytesInAllHeaps)
 				},
 				new Counter
 				{
-					Name = "Process Memory Usage"
+					Name = _clrMemoryCounters.GetCounterName(x => x.Gen0Collections)
+				},
+				new Counter
+				{
+					Name = _clrMemoryCounters.GetCounterName(x => x.Gen1Collections)
+				},
+				new Counter
+				{
+					Name = _clrMemoryCounters.GetCounterName(x => x.Gen2Collections)
+				},
+				new Counter
+				{
+					Name = _clrMemoryCounters.GetCounterName(x => x.AllocatedBytesPerSecond)
+				},
+				new Counter
+				{
+					Name = _clrMemoryCounters.GetCounterName(x => x.TimeInGC)
 				},
 			};
 		}
 
-		public double GetCounterData()
+		public float[] GetCounterData()
 		{
-			return new Random().NextDouble();
-		}
-
-		public string Get()
-		{
-			return "Hello, JavaScript!";
+			return new[]
+			{
+				_clrMemoryCounters.BytesInAllHeaps.NextValue(),
+				_clrMemoryCounters.Gen0Collections.NextValue(),
+				_clrMemoryCounters.Gen1Collections.NextValue(),
+				_clrMemoryCounters.Gen2Collections.NextValue(),
+				_clrMemoryCounters.AllocatedBytesPerSecond.NextValue(),
+				_clrMemoryCounters.TimeInGC.NextValue(),
+			};
 		}
 	}
 

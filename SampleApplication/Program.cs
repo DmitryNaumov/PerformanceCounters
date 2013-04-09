@@ -6,29 +6,26 @@
 	using System.Threading;
 	using System.Web.Http;
 	using System.Web.Http.SelfHost;
-	using PerformanceCounters;
+	using Autofac.Integration.WebApi;
+	using Autofac;
 
 	class Program
 	{
 		static void Main(string[] args)
 		{
-			var sampleCounters = PerformanceCounterFactory.GetCounters<SampleCounters>();
-
-			sampleCounters.RequestsTotalCount.Increment();
-
-			var clrMemoryCounters = PerformanceCounterFactory.GetCounters<ClrMemoryCounters>();
-
-			// TODO: sample app with blackjack and hookers
-
 			var rootPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-			//new HttpService(rootPath).Start();
 
 			var config = new HttpSelfHostConfiguration("http://localhost:2707/");
 			config.MessageHandlers.Add(new StaticFileHandler(Path.Combine(rootPath, "web")));
 			config.Routes.MapHttpRoute(
 				name: "API Default",
-				routeTemplate: "api/{controller}/{action}",
-				defaults: new { action = "get" });
+				routeTemplate: "api/{controller}/{action}");
+
+			var builder = new ContainerBuilder();
+			builder.RegisterModule(new AutofacModule());
+
+			var container = builder.Build();
+			config.DependencyResolver = new AutofacWebApiDependencyResolver(container);
 
 			using (var server = new HttpSelfHostServer(config))
 			{

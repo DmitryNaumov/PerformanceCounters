@@ -19,10 +19,10 @@
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li class="active">
-                                <a href="#">Application</a>
+                                <a id="Application" href="#">Application</a>
                             </li>
                             <li>
-                                <a href="#">System</a>
+                                <a id="System" href="#">System</a>
                             </li>
                         </ul>
                     </div>
@@ -55,7 +55,17 @@
     <script src="charts.js"></script>
 
     <script>
-        $(function() {
+        $(function () {
+            var categoryName = {};
+            
+            $("#Application").click(function() {
+                categoryName = "Application";
+            });
+
+            $("#System").click(function () {
+                categoryName = "System";
+            });
+
             $.ajax("/api/stats/GetCounters", {
                 headers: {
                     Accept: "application/json"
@@ -73,12 +83,10 @@
                 $(".error").text(xhr.statusText).show();
             }
 
-            ;
-
-            function setupCharts(metadata) {
-                for (var i in metadata) {
-                    var category = metadata[i];
-                    window.Charts(category);
+            function setupCharts(counters) {
+                for (var i in counters) {
+                    var counterName = counters[i].Name;
+                    window.Charts(i, counterName);
                 }
             }
 

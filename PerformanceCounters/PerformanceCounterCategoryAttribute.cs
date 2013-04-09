@@ -17,6 +17,12 @@ namespace PerformanceCounters
 			_categoryType = categoryType;
 		}
 
+		public PerformanceCounterCategoryAttribute(string categoryName, PerformanceCounterCategoryType categoryType)
+		{
+			_categoryName = categoryName;
+			_categoryType = categoryType;
+		}
+
 		public string CategoryName
 		{
 			get { return _categoryName; }

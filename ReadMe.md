@@ -31,3 +31,7 @@ Use
 
 	var sampleCounters = PerformanceCounterFactory.GetCounters<SampleCounters>();
 	sampleCounters.RequestsTotalCount.Increment();
+
+## Showtime
+
+Run sample application and open http://localhost:2707
