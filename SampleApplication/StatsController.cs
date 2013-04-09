@@ -1,80 +1,52 @@
 namespace SampleApplication
 {
 	using System;
+	using System.Collections.Generic;
+	using System.Linq;
 	using System.Web.Http;
 	using PerformanceCounters;
 
 	public sealed class StatsController : ApiController
 	{
-		private readonly ClrMemoryCounters _clrMemoryCounters;
+		private readonly IPerformanceCounterSet[] _performanceCounters;
 
-		public StatsController(ClrMemoryCounters clrMemoryCounters)
+		public StatsController(IEnumerable<IPerformanceCounterSet> performanceCounters)
 		{
-			_clrMemoryCounters = clrMemoryCounters;
+			_performanceCounters = performanceCounters.ToArray();
 		}
 
 		public Category[] GetCategories()
 		{
-			return new[]
-			{
-				new Category()
-				{
-					Title = "System",
-				},
-				new Category()
-				{
-					Title = "Application"
-				},
-			};
+			return _performanceCounters.Select(pcs => new Category { Title = pcs.GetCategoryName() }).ToArray();
 		}
 
 		public Counter[] GetCounters(string categoryName)
 		{
-			if (categoryName != "System")
+			var pcs = GetPerformanceCounterSet(categoryName);
+
+			if (pcs == null)
 			{
 				return new Counter[0];
 			}
 
-			return new []
-			{
-				new Counter
-				{
-					Name = _clrMemoryCounters.GetCounterName(x => x.BytesInAllHeaps)
-				},
-				new Counter
-				{
-					Name = _clrMemoryCounters.GetCounterName(x => x.Gen0Collections)
-				},
-				new Counter
-				{
-					Name = _clrMemoryCounters.GetCounterName(x => x.Gen1Collections)
-				},
-				new Counter
-				{
-					Name = _clrMemoryCounters.GetCounterName(x => x.Gen2Collections)
-				},
-				new Counter
-				{
-					Name = _clrMemoryCounters.GetCounterName(x => x.AllocatedBytesPerSecond)
-				},
-				new Counter
-				{
-					Name = _clrMemoryCounters.GetCounterName(x => x.TimeInGC)
-				},
-			};
+			return pcs.GetCounterNames().Select(counterName => new Counter {Name = counterName}).ToArray();
 		}
 
-		public float[] GetCounterData()
+		public float[] GetCounterData(string categoryName)
 		{
-			return new[]
+			var pcs = GetPerformanceCounterSet(categoryName);
+
+			if (pcs == null)
 			{
-				_clrMemoryCounters.BytesInAllHeaps.NextValue(),
-				_clrMemoryCounters.Gen0Collections.NextValue(),
-				_clrMemoryCounters.Gen1Collections.NextValue(),
-				_clrMemoryCounters.Gen2Collections.NextValue(),
-				_clrMemoryCounters.AllocatedBytesPerSecond.NextValue(),
-				_clrMemoryCounters.TimeInGC.NextValue(),
-			};
+				return new float[0];
+			}
+
+			return pcs.GetCounterValues();
+		}
+
+		private IPerformanceCounterSet GetPerformanceCounterSet(string categoryName)
+		{
+			return _performanceCounters.FirstOrDefault(pcs => categoryName.Equals(pcs.GetCategoryName(), StringComparison.OrdinalIgnoreCase));
 		}
 	}
 

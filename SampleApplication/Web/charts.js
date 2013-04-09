@@ -36,7 +36,7 @@
 
         if (!currentCategory) return;
             
-        $.ajax("/api/stats/GetCounterData", {
+        $.ajax("/api/stats/GetCounterData?categoryName=" + currentCategory, {
             headers: {
                 Accept: "application/json"
             },

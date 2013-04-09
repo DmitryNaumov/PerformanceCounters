@@ -1,5 +1,6 @@
 ﻿namespace SampleApplication
 {
+	using System.Linq;
 	using System.Reflection;
 	using System.Web.Http;
 	using Autofac;
@@ -20,6 +21,7 @@
 
 			builder.Register(c => PerformanceCounterFactory.GetCounters<SampleCounters>()).AsImplementedInterfaces().AsSelf().SingleInstance();
 			builder.Register(c => PerformanceCounterFactory.GetCounters<ClrMemoryCounters>()).AsImplementedInterfaces().AsSelf().SingleInstance();
+			builder.Register(c => PerformanceCounterFactory.GetCounters<ClrJitCounters>()).AsImplementedInterfaces().AsSelf().SingleInstance();
 
 			builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
 		}

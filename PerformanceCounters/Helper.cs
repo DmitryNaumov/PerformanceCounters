@@ -20,7 +20,7 @@
 				return null;
 			}
 
-			return new CounterCreationData(attribute.CounterName, attribute.CounterHelp, attribute.CounterType);
+			return new CounterCreationData(attribute.CounterName, attribute.CounterHelp ?? string.Empty, attribute.CounterType);
 		}
 	}
 }
