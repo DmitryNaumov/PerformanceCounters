@@ -8,7 +8,6 @@ namespace PerformanceCounters
 	public static class PerformanceCounterFactory
 	{
 		private static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
-		private static readonly NullPerformanceCounter NullInstance = new NullPerformanceCounter();
 
 		private static readonly Dictionary<Type, IPerformanceCounterSet> _counters = new Dictionary<Type, IPerformanceCounterSet>();
 
@@ -71,7 +70,7 @@ namespace PerformanceCounters
 			{
 			}
 
-			return NullInstance;
+			return new NullPerformanceCounter(counterName);
 		}
 	}
 }

@@ -29,7 +29,7 @@ namespace SampleApplication
 				return new Counter[0];
 			}
 
-			return pcs.GetCounterNames().Select(counterName => new Counter {Name = counterName}).ToArray();
+			return pcs.Counters.Select(counter => new Counter {Name = counter.CounterName}).ToArray();
 		}
 
 		public float[] GetCounterData(string categoryName)
@@ -41,7 +41,7 @@ namespace SampleApplication
 				return new float[0];
 			}
 
-			return pcs.GetCounterValues();
+			return pcs.Counters.Select(pc => pc.NextValue()).ToArray();
 		}
 
 		private IPerformanceCounterSet GetPerformanceCounterSet(string categoryName)

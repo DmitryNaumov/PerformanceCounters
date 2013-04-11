@@ -8,10 +8,12 @@ namespace PerformanceCounters
 
 	internal sealed class PerformanceCountersInterceptor<T> : IInterceptor where T : class, IPerformanceCounterSet
 	{
-		private static readonly MethodInfo CategoryName = typeof (IPerformanceCounterSet).GetProperty("CategoryName").GetGetMethod();
+		private static readonly MethodInfo CategoryNameProperty = typeof (IPerformanceCounterSet).GetProperty("CategoryName").GetGetMethod();
+		private static readonly MethodInfo CountersProperty = typeof(IPerformanceCounterSet).GetProperty("Counters").GetGetMethod();
 
 		private readonly string _categoryName;
-		private readonly Dictionary<MethodInfo, IPerformanceCounter> _counters = new Dictionary<MethodInfo, IPerformanceCounter>();
+		private readonly IReadOnlyCollection<IPerformanceCounter> _counters;
+		private readonly Dictionary<MethodInfo, IPerformanceCounter> _lookup = new Dictionary<MethodInfo, IPerformanceCounter>();
 
 		public PerformanceCountersInterceptor()
 		{
@@ -38,26 +40,34 @@ namespace PerformanceCounters
 				}
 
 				var counter = PerformanceCounterFactory.GetInstance(_categoryName, counterName, attribute.CategoryType, propertyInfo.PropertyType == typeof(IReadOnlyPerformanceCounter));
-				_counters.Add(getMethod, counter);
+				_lookup.Add(getMethod, counter);
 
 				var setMethod = propertyInfo.GetSetMethod();
 				if (setMethod != null)
 				{
-					_counters.Add(setMethod, counter);
+					_lookup.Add(setMethod, counter);
 				}
 			}
+
+			_counters = _lookup.OrderBy(kvp => kvp.Key.MetadataToken).Select(kvp => kvp.Value).ToList();
 		}
 
 		public void Intercept(IInvocation invocation)
 		{
-			if (invocation.Method == CategoryName)
+			if (invocation.Method == CategoryNameProperty)
 			{
 				invocation.ReturnValue = _categoryName;
 				return;
 			}
 
+			if (invocation.Method == CountersProperty)
+			{
+				invocation.ReturnValue = _counters;
+				return;
+			}
+
 			IPerformanceCounter counter;
-			if (_counters.TryGetValue(invocation.Method, out counter))
+			if (_lookup.TryGetValue(invocation.Method, out counter))
 			{
 				invocation.ReturnValue = counter;
 			}

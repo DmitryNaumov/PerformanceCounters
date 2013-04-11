@@ -5,46 +5,51 @@ namespace PerformanceCounters
 
 	internal sealed class PerformanceCounterProxy : IPerformanceCounter
 	{
-		private readonly PerformanceCounter _perfCounter;
+		private readonly PerformanceCounter _counter;
 
-		public PerformanceCounterProxy(PerformanceCounter perfCounter)
+		public PerformanceCounterProxy(PerformanceCounter counter)
 		{
-			if (perfCounter == null)
+			if (counter == null)
 			{
-				throw new ArgumentNullException("perfCounter");
+				throw new ArgumentNullException("counter");
 			}
 
-			_perfCounter = perfCounter;
+			_counter = counter;
+		}
+
+		public string CounterName
+		{
+			get { return _counter.CounterName; }
 		}
 
 		public void Increment()
 		{
-			_perfCounter.Increment();
+			_counter.Increment();
 		}
 
 		public void IncrementBy(long value)
 		{
-			_perfCounter.IncrementBy(value);
+			_counter.IncrementBy(value);
 		}
 
 		public void Decrement()
 		{
-			_perfCounter.Decrement();
+			_counter.Decrement();
 		}
 
 		public void Reset()
 		{
-			_perfCounter.RawValue = 0;
+			_counter.RawValue = 0;
 		}
 
 		public float NextValue()
 		{
-			return _perfCounter.NextValue();
+			return _counter.NextValue();
 		}
 
 		void IDisposable.Dispose()
 		{
-			_perfCounter.Dispose();
+			_counter.Dispose();
 		}
 	}
 }

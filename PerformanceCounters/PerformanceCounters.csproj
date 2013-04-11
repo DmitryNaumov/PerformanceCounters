@@ -51,7 +51,6 @@
     <Compile Include="PerformanceCounterCategoryAttribute.cs" />
     <Compile Include="PerformanceCounterFactory.cs" />
     <Compile Include="PerformanceCounterProxy.cs" />
-    <Compile Include="PerformanceCounterSetExtensions.cs" />
     <Compile Include="PerformanceCountersInterceptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
