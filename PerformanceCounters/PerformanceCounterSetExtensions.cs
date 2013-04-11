@@ -5,18 +5,6 @@ namespace PerformanceCounters
 
 	public static class PerformanceCounterSetExtensions
 	{
-		public static string GetCategoryName(this IPerformanceCounterSet counterSet)
-		{
-			var attributes = counterSet.GetType().GetCustomAttributes(typeof (PerformanceCounterCategoryAttribute), false);
-			if (attributes.Length != 1)
-			{
-				throw new ArgumentException("counterSet");
-			}
-
-			var categoryAttribute = (PerformanceCounterCategoryAttribute)attributes[0];
-			return categoryAttribute.CategoryName;
-		}
-
 		public static string[] GetCounterNames(this IPerformanceCounterSet counterSet)
 		{
 			return
