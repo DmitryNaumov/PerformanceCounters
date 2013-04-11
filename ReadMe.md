@@ -35,3 +35,5 @@ Use
 ## Showtime
 
 Run sample application and open http://localhost:2707
+
+![Alt text](sample.jpg)
