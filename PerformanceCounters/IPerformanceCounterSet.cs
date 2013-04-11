@@ -2,5 +2,6 @@
 {
 	public interface IPerformanceCounterSet
 	{
+		string CategoryName { get; }
 	}
 }

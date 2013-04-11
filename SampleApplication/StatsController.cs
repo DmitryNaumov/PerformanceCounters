@@ -17,7 +17,7 @@ namespace SampleApplication
 
 		public Category[] GetCategories()
 		{
-			return _performanceCounters.Select(pcs => new Category { Title = pcs.GetCategoryName() }).ToArray();
+			return _performanceCounters.Select(pcs => new Category { Title = pcs.CategoryName }).ToArray();
 		}
 
 		public Counter[] GetCounters(string categoryName)
@@ -46,7 +46,7 @@ namespace SampleApplication
 
 		private IPerformanceCounterSet GetPerformanceCounterSet(string categoryName)
 		{
-			return _performanceCounters.FirstOrDefault(pcs => categoryName.Equals(pcs.GetCategoryName(), StringComparison.OrdinalIgnoreCase));
+			return _performanceCounters.FirstOrDefault(pcs => categoryName.Equals(pcs.CategoryName, StringComparison.OrdinalIgnoreCase));
 		}
 	}
 

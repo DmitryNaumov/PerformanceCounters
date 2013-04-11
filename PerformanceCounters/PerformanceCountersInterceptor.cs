@@ -8,6 +8,9 @@ namespace PerformanceCounters
 
 	internal sealed class PerformanceCountersInterceptor<T> : IInterceptor where T : class, IPerformanceCounterSet
 	{
+		private static readonly MethodInfo CategoryName = typeof (IPerformanceCounterSet).GetProperty("CategoryName").GetGetMethod();
+
+		private readonly string _categoryName;
 		private readonly Dictionary<MethodInfo, IPerformanceCounter> _counters = new Dictionary<MethodInfo, IPerformanceCounter>();
 
 		public PerformanceCountersInterceptor()
@@ -19,7 +22,7 @@ namespace PerformanceCounters
 				throw new ArgumentException();
 			}
 
-			var categoryName = attribute.CategoryName;
+			_categoryName = attribute.CategoryName;
 			foreach (var propertyInfo in type.GetProperties())
 			{
 				var counterName = GetCounterName(propertyInfo);
@@ -34,7 +37,7 @@ namespace PerformanceCounters
 					throw new InvalidProgramException();
 				}
 
-				var counter = PerformanceCounterFactory.GetInstance(categoryName, counterName, attribute.CategoryType, propertyInfo.PropertyType == typeof(IReadOnlyPerformanceCounter));
+				var counter = PerformanceCounterFactory.GetInstance(_categoryName, counterName, attribute.CategoryType, propertyInfo.PropertyType == typeof(IReadOnlyPerformanceCounter));
 				_counters.Add(getMethod, counter);
 
 				var setMethod = propertyInfo.GetSetMethod();
@@ -47,6 +50,12 @@ namespace PerformanceCounters
 
 		public void Intercept(IInvocation invocation)
 		{
+			if (invocation.Method == CategoryName)
+			{
+				invocation.ReturnValue = _categoryName;
+				return;
+			}
+
 			IPerformanceCounter counter;
 			if (_counters.TryGetValue(invocation.Method, out counter))
 			{
