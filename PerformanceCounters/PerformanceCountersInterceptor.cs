@@ -8,9 +8,6 @@ namespace PerformanceCounters
 
 	internal sealed class PerformanceCountersInterceptor<T> : IInterceptor where T : class, IPerformanceCounterSet
 	{
-		private static readonly MethodInfo CategoryNameProperty = typeof (IPerformanceCounterSet).GetProperty("CategoryName").GetGetMethod();
-		private static readonly MethodInfo CountersProperty = typeof(IPerformanceCounterSet).GetProperty("Counters").GetGetMethod();
-
 		private readonly string _categoryName;
 		private readonly IReadOnlyCollection<IPerformanceCounter> _counters;
 		private readonly Dictionary<MethodInfo, IPerformanceCounter> _lookup = new Dictionary<MethodInfo, IPerformanceCounter>();
@@ -54,13 +51,13 @@ namespace PerformanceCounters
 
 		public void Intercept(IInvocation invocation)
 		{
-			if (invocation.Method == CategoryNameProperty)
+			if (invocation.Method == ReflectionHelper.CategoryNameProperty)
 			{
 				invocation.ReturnValue = _categoryName;
 				return;
 			}
 
-			if (invocation.Method == CountersProperty)
+			if (invocation.Method == ReflectionHelper.CountersProperty)
 			{
 				invocation.ReturnValue = _counters;
 				return;
@@ -83,5 +80,11 @@ namespace PerformanceCounters
 
 			return attribute.CounterName;
 		}
+	}
+
+	internal static class ReflectionHelper
+	{
+		public static readonly MethodInfo CategoryNameProperty = typeof(IPerformanceCounterSet).GetProperty("CategoryName").GetGetMethod();
+		public static readonly MethodInfo CountersProperty = typeof(IPerformanceCounterSet).GetProperty("Counters").GetGetMethod();
 	}
 }
