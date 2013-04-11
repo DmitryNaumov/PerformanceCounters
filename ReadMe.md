@@ -36,4 +36,5 @@ Use
 
 Run sample application and open http://localhost:2707
 
-![Alt text](sample.jpg)
+![Alt text](./sample.jpg?raw=true)
+
