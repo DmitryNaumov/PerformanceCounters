@@ -21,7 +21,6 @@
 
 			builder.Register(c => PerformanceCounterFactory.GetCounters<SampleCounters>()).AsImplementedInterfaces().AsSelf().SingleInstance();
 			builder.Register(c => PerformanceCounterFactory.GetCounters<ClrMemoryCounters>()).AsImplementedInterfaces().AsSelf().SingleInstance();
-			builder.Register(c => PerformanceCounterFactory.GetCounters<ClrJitCounters>()).AsImplementedInterfaces().AsSelf().SingleInstance();
 
 			builder.RegisterSource(new AnyConcreteTypeNotAlreadyRegisteredSource());
 		}
