@@ -63,7 +63,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AutofacModule.cs" />
-    <Compile Include="ClrJitCounters.cs" />
     <Compile Include="ClrMemoryCounters.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

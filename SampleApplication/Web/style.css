@@ -8,7 +8,7 @@ body
 }
 
 /* Wrapper for page content to push down footer */
-#wrap
+#wrapper
 {
     min-height: 100%;
     height: auto !important;
@@ -92,3 +92,24 @@ code
     border-radius: 5px;
 }
 
+.topmost {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 12em;
+    margin-left: -7.25em;
+    margin-top: -2em;
+    padding: 1em;
+    text-align: center;
+    background-color: #fff;
+    border: .25em solid #c6c6c6;
+    color: #868686;
+    font: normal 20px tahoma, verdana, arial, sans-serif;
+    z-index: 1000;
+}
+
+.error {
+    color: red;
+    line-height: 1.5
+}

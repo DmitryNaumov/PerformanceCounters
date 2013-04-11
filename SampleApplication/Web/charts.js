@@ -1,5 +1,7 @@
 ﻿$(function () {
     var currentCategory = {};
+
+    $("#loading").show();
     
     $.ajax("/api/stats/GetCategories", {
         headers: {
@@ -30,10 +32,6 @@
     });
 
     function poll() {
-        setTimeout(function () {
-            poll();
-        }, 1000);
-
         if (!currentCategory) return;
             
         $.ajax("/api/stats/GetCounterData?categoryName=" + currentCategory, {
@@ -45,6 +43,11 @@
         });
 
         function success(data) {
+            setTimeout(function () {
+                poll();
+            }, 1000);
+
+            $("#loading").hide();
             $(".error").hide();
             $(document).trigger("sample.updateEvent", [data]);
         }
@@ -73,7 +76,8 @@
     }
 
     function error(xhr, status, err) {
-        $(".error").text(xhr.statusText).show();
+        $("#loading").hide();
+        $(".error").show();
     }
 
     var bindCharts = function (counterIndex, title) {
