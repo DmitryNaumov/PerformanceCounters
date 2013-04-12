@@ -70,7 +70,7 @@
                 
             for (var i in counters) {
                 var counterName = counters[i].Name;
-                bindCharts(i, counterName);
+                bindCharts(categoryName, i, counterName);
             }
         }
     }
@@ -80,7 +80,7 @@
         $(".error").show();
     }
 
-    var bindCharts = function (counterIndex, title) {
+    var bindCharts = function (categoryName, counterIndex, title) {
 
         var width = 300;
         var height = 100;
@@ -104,6 +104,8 @@
             var graph = createGraphInternal(container, seriesData);
             $(document).on("sample.updateEvent", function (event, data, timeStamp) {
 
+                if (categoryName != currentCategory) return;
+                
                 timeStamp = timeStamp || new Date();
                 var point = { x: timeStamp.getTime() / 1000, y: data[counterIndex] };
                 seriesData.push(point);
