@@ -22,6 +22,11 @@ namespace PerformanceCounters
 			get { return _counter.CounterName; }
 		}
 
+		public PerformanceCounterType CounterType
+		{
+			get { return _counter.CounterType; }
+		}
+
 		public void Increment()
 		{
 			_counter.Increment();

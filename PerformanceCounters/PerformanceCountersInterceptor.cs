@@ -15,17 +15,17 @@ namespace PerformanceCounters
 		public PerformanceCountersInterceptor()
 		{
 			var type = typeof(T);
-			var attribute = Helper.GetCategoryAttribute(type);
-			if (attribute == null)
+			var categoryAttribute = Helper.GetCategoryAttribute(type);
+			if (categoryAttribute == null)
 			{
 				throw new ArgumentException();
 			}
 
-			_categoryName = attribute.CategoryName;
+			_categoryName = categoryAttribute.CategoryName;
 			foreach (var propertyInfo in type.GetProperties())
 			{
-				var counterName = GetCounterName(propertyInfo);
-				if (string.IsNullOrEmpty(counterName))
+				var counterAttribute = GetCounterAttribute(propertyInfo);
+				if (counterAttribute == null)
 				{
 					continue;
 				}
@@ -36,7 +36,7 @@ namespace PerformanceCounters
 					throw new InvalidProgramException();
 				}
 
-				var counter = PerformanceCounterFactory.GetInstance(_categoryName, counterName, attribute.CategoryType, propertyInfo.PropertyType == typeof(IReadOnlyPerformanceCounter));
+				var counter = PerformanceCounterFactory.GetInstance(categoryAttribute,  counterAttribute, propertyInfo.PropertyType == typeof(IReadOnlyPerformanceCounter));
 				_lookup.Add(getMethod, counter);
 
 				var setMethod = propertyInfo.GetSetMethod();
@@ -70,15 +70,11 @@ namespace PerformanceCounters
 			}
 		}
 
-		private string GetCounterName(PropertyInfo propertyInfo)
+		private PerformanceCounterAttribute GetCounterAttribute(PropertyInfo propertyInfo)
 		{
 			var attribute = (PerformanceCounterAttribute)propertyInfo.GetCustomAttributes(typeof(PerformanceCounterAttribute), false).FirstOrDefault();
-			if (attribute == null)
-			{
-				return string.Empty;
-			}
 
-			return attribute.CounterName;
+			return attribute;
 		}
 	}
 

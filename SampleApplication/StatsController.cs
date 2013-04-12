@@ -2,6 +2,7 @@ namespace SampleApplication
 {
 	using System;
 	using System.Collections.Generic;
+	using System.Diagnostics;
 	using System.Linq;
 	using System.Web.Http;
 	using PerformanceCounters;
@@ -29,7 +30,7 @@ namespace SampleApplication
 				return new Counter[0];
 			}
 
-			return pcs.Counters.Select(counter => new Counter {Name = counter.CounterName}).ToArray();
+			return pcs.Counters.Where(counter => !IsBaseCounter(counter)).Select(counter => new Counter {Name = counter.CounterName}).ToArray();
 		}
 
 		public float[] GetCounterData(string categoryName)
@@ -47,6 +48,20 @@ namespace SampleApplication
 		private IPerformanceCounterSet GetPerformanceCounterSet(string categoryName)
 		{
 			return _performanceCounters.FirstOrDefault(pcs => categoryName.Equals(pcs.CategoryName, StringComparison.OrdinalIgnoreCase));
+		}
+
+		private bool IsBaseCounter(IPerformanceCounter counter)
+		{
+			switch (counter.CounterType)
+			{
+				case PerformanceCounterType.AverageBase:
+				case PerformanceCounterType.RawBase:
+				case PerformanceCounterType.SampleBase:
+				case PerformanceCounterType.CounterMultiBase:
+					return true;
+			}
+
+			return false;
 		}
 	}
 

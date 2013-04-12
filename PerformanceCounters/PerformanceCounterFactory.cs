@@ -54,8 +54,13 @@ namespace PerformanceCounters
 			}
 		}
 
-		internal static IPerformanceCounter GetInstance(string categoryName, string counterName, PerformanceCounterCategoryType categoryType, bool readOnly)
+		internal static IPerformanceCounter GetInstance(PerformanceCounterCategoryAttribute categoryAttribute, PerformanceCounterAttribute counterAttribute, bool readOnly)
 		{
+			var categoryName = categoryAttribute.CategoryName;
+			var categoryType = categoryAttribute.CategoryType;
+			var counterName = counterAttribute.CounterName;
+			var counterType = counterAttribute.CounterType;
+
 			try
 			{
 				if (PerformanceCounterCategory.Exists(categoryName) && PerformanceCounterCategory.CounterExists(counterName, categoryName))
@@ -70,7 +75,7 @@ namespace PerformanceCounters
 			{
 			}
 
-			return new NullPerformanceCounter(counterName);
+			return new NullPerformanceCounter(counterName, counterType);
 		}
 	}
 }
