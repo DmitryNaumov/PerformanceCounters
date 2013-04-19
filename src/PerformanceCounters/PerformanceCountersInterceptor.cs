@@ -1,4 +1,4 @@
-namespace PerformanceCounters
+namespace NeedfulThings.PerformanceCounters
 {
 	using System;
 	using System.Collections.Generic;
@@ -10,11 +10,13 @@ namespace PerformanceCounters
 	{
 		private readonly string _categoryName;
 		private readonly IReadOnlyCollection<IPerformanceCounter> _counters;
-		private readonly Dictionary<MethodInfo, IPerformanceCounter> _lookup = new Dictionary<MethodInfo, IPerformanceCounter>();
+
+		private readonly Dictionary<MethodInfo, IPerformanceCounter> _lookup =
+			new Dictionary<MethodInfo, IPerformanceCounter>();
 
 		public PerformanceCountersInterceptor()
 		{
-			var type = typeof(T);
+			var type = typeof (T);
 			var categoryAttribute = Helper.GetCategoryAttribute(type);
 			if (categoryAttribute == null)
 			{
@@ -36,7 +38,9 @@ namespace PerformanceCounters
 					throw new InvalidProgramException();
 				}
 
-				var counter = PerformanceCounterFactory.GetInstance(categoryAttribute,  counterAttribute, propertyInfo.PropertyType == typeof(IReadOnlyPerformanceCounter));
+				var counter = PerformanceCounterFactory.GetInstance(categoryAttribute, counterAttribute,
+				                                                    propertyInfo.PropertyType ==
+				                                                    typeof (IReadOnlyPerformanceCounter));
 				_lookup.Add(getMethod, counter);
 
 				var setMethod = propertyInfo.GetSetMethod();
@@ -72,7 +76,9 @@ namespace PerformanceCounters
 
 		private PerformanceCounterAttribute GetCounterAttribute(PropertyInfo propertyInfo)
 		{
-			var attribute = (PerformanceCounterAttribute)propertyInfo.GetCustomAttributes(typeof(PerformanceCounterAttribute), false).FirstOrDefault();
+			var attribute =
+				(PerformanceCounterAttribute)
+				propertyInfo.GetCustomAttributes(typeof (PerformanceCounterAttribute), false).FirstOrDefault();
 
 			return attribute;
 		}
@@ -80,7 +86,10 @@ namespace PerformanceCounters
 
 	internal static class ReflectionHelper
 	{
-		public static readonly MethodInfo CategoryNameProperty = typeof(IPerformanceCounterSet).GetProperty("CategoryName").GetGetMethod();
-		public static readonly MethodInfo CountersProperty = typeof(IPerformanceCounterSet).GetProperty("Counters").GetGetMethod();
+		public static readonly MethodInfo CategoryNameProperty =
+			typeof (IPerformanceCounterSet).GetProperty("CategoryName").GetGetMethod();
+
+		public static readonly MethodInfo CountersProperty =
+			typeof (IPerformanceCounterSet).GetProperty("Counters").GetGetMethod();
 	}
 }

@@ -1,4 +1,4 @@
-namespace PerformanceCounters
+namespace NeedfulThings.PerformanceCounters
 {
 	using System;
 	using System.Diagnostics;
@@ -22,8 +22,8 @@ namespace PerformanceCounters
 			_counterName = counterName;
 		}
 
-		public string CounterName{
-
+		public string CounterName
+		{
 			get { return _counterName; }
 		}
 

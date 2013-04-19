@@ -6,7 +6,7 @@
 	using Autofac;
 	using Autofac.Features.ResolveAnything;
 	using Autofac.Integration.WebApi;
-	using PerformanceCounters;
+	using NeedfulThings.PerformanceCounters;
 
 	internal sealed class AutofacModule : Autofac.Module
 	{

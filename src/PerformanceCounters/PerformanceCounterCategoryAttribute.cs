@@ -1,4 +1,4 @@
-namespace PerformanceCounters
+namespace NeedfulThings.PerformanceCounters
 {
 	using System;
 	using System.Diagnostics;
@@ -10,7 +10,8 @@ namespace PerformanceCounters
 		private readonly string _categoryHelp;
 		private readonly PerformanceCounterCategoryType _categoryType;
 
-		public PerformanceCounterCategoryAttribute(string categoryName, string categoryHelp, PerformanceCounterCategoryType categoryType)
+		public PerformanceCounterCategoryAttribute(string categoryName, string categoryHelp,
+		                                           PerformanceCounterCategoryType categoryType)
 		{
 			_categoryName = categoryName;
 			_categoryHelp = categoryHelp;

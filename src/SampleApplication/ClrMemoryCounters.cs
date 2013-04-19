@@ -1,7 +1,7 @@
 namespace SampleApplication
 {
 	using System.Diagnostics;
-	using PerformanceCounters;
+	using NeedfulThings.PerformanceCounters;
 
 	[PerformanceCounterCategory(".NET CLR Memory", PerformanceCounterCategoryType.MultiInstance)]
 	public interface ClrMemoryCounters : IPerformanceCounterSet

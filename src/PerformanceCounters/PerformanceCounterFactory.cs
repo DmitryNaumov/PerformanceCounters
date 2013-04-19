@@ -1,4 +1,4 @@
-namespace PerformanceCounters
+namespace NeedfulThings.PerformanceCounters
 {
 	using System;
 	using System.Collections.Generic;
@@ -9,25 +9,26 @@ namespace PerformanceCounters
 	{
 		private static readonly ProxyGenerator ProxyGenerator = new ProxyGenerator();
 
-		private static readonly Dictionary<Type, IPerformanceCounterSet> _counters = new Dictionary<Type, IPerformanceCounterSet>();
+		private static readonly Dictionary<Type, IPerformanceCounterSet> _counters =
+			new Dictionary<Type, IPerformanceCounterSet>();
 
 		public static PerformanceCounterInstaller GetInstallerFor<T>() where T : IPerformanceCounterSet
 		{
-			var category = Helper.GetCategoryAttribute(typeof(T));
+			var category = Helper.GetCategoryAttribute(typeof (T));
 			if (category == null)
 			{
-				var message = string.Format("Type '{0}' should be marked with PerformanceCounterCategoryAttribute", typeof(T));
+				var message = string.Format("Type '{0}' should be marked with PerformanceCounterCategoryAttribute", typeof (T));
 				throw new ArgumentException(message);
 			}
 
 			var installer = new PerformanceCounterInstaller
-				{
-					CategoryName = category.CategoryName,
-					CategoryHelp = category.CategoryHelp,
-					CategoryType = category.CategoryType
-				};
+			{
+				CategoryName = category.CategoryName,
+				CategoryHelp = category.CategoryHelp,
+				CategoryType = category.CategoryType
+			};
 
-			foreach (var propertyInfo in typeof(T).GetProperties())
+			foreach (var propertyInfo in typeof (T).GetProperties())
 			{
 				var counterCreationData = Helper.GetCounterCreationData(propertyInfo);
 				if (counterCreationData == null)
@@ -44,17 +45,18 @@ namespace PerformanceCounters
 			lock (_counters)
 			{
 				IPerformanceCounterSet counterSet;
-				if (!_counters.TryGetValue(typeof(T), out counterSet))
+				if (!_counters.TryGetValue(typeof (T), out counterSet))
 				{
 					counterSet = ProxyGenerator.CreateInterfaceProxyWithoutTarget<T>(new PerformanceCountersInterceptor<T>());
-					_counters.Add(typeof(T), counterSet);
+					_counters.Add(typeof (T), counterSet);
 				}
 
 				return (T) counterSet;
 			}
 		}
 
-		internal static IPerformanceCounter GetInstance(PerformanceCounterCategoryAttribute categoryAttribute, PerformanceCounterAttribute counterAttribute, bool readOnly)
+		internal static IPerformanceCounter GetInstance(PerformanceCounterCategoryAttribute categoryAttribute,
+		                                                PerformanceCounterAttribute counterAttribute, bool readOnly)
 		{
 			var categoryName = categoryAttribute.CategoryName;
 			var categoryType = categoryAttribute.CategoryType;
@@ -63,9 +65,12 @@ namespace PerformanceCounters
 
 			try
 			{
-				if (PerformanceCounterCategory.Exists(categoryName) && PerformanceCounterCategory.CounterExists(counterName, categoryName))
+				if (PerformanceCounterCategory.Exists(categoryName) &&
+				    PerformanceCounterCategory.CounterExists(counterName, categoryName))
 				{
-					var instanceName = categoryType == PerformanceCounterCategoryType.SingleInstance ? string.Empty : Process.GetCurrentProcess().ProcessName;
+					var instanceName = categoryType == PerformanceCounterCategoryType.SingleInstance
+						                   ? string.Empty
+						                   : Process.GetCurrentProcess().ProcessName;
 
 					var counter = new PerformanceCounter(categoryName, counterName, instanceName, readOnly);
 					return new PerformanceCounterProxy(counter);

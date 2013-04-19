@@ -1,7 +1,7 @@
 namespace SampleApplication
 {
 	using System.Diagnostics;
-	using PerformanceCounters;
+	using NeedfulThings.PerformanceCounters;
 
 	[PerformanceCounterCategory("Sample Category", "Everything is so trivial", PerformanceCounterCategoryType.SingleInstance)]
 	public interface SampleCounters : IPerformanceCounterSet

@@ -2,7 +2,7 @@
 {
 	using System.ComponentModel;
 	using System.Configuration.Install;
-	using PerformanceCounters;
+	using NeedfulThings.PerformanceCounters;
 
 	[RunInstaller(true)]
 	public sealed class SampleCountersInstaller : Installer

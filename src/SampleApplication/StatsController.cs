@@ -5,7 +5,7 @@ namespace SampleApplication
 	using System.Diagnostics;
 	using System.Linq;
 	using System.Web.Http;
-	using PerformanceCounters;
+	using NeedfulThings.PerformanceCounters;
 
 	public sealed class StatsController : ApiController
 	{

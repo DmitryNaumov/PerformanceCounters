@@ -1,4 +1,4 @@
-namespace PerformanceCounters
+namespace NeedfulThings.PerformanceCounters
 {
 	using System;
 
