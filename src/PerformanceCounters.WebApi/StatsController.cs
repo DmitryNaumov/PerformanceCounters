@@ -1,13 +1,12 @@
-namespace SampleApplication
-{
-	using System;
-	using System.Collections.Generic;
-	using System.Diagnostics;
-	using System.Linq;
-	using System.Web.Http;
-	using NeedfulThings.PerformanceCounters;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Web.Http;
 
-	public sealed class StatsController : ApiController
+namespace NeedfulThings.PerformanceCounters.WebApi
+{
+    public sealed class StatsController : ApiController
 	{
 		private readonly IPerformanceCounterSet[] _performanceCounters;
 
