@@ -1,4 +1,6 @@
-﻿namespace SampleApplication
+﻿using System.ServiceModel;
+
+namespace SampleApplication
 {
 	using System;
 	using System.IO;
@@ -29,10 +31,20 @@
 
 			using (var server = new HttpSelfHostServer(config))
 			{
-				server.OpenAsync().Wait();
+			    try
+			    {
+                    server.OpenAsync().GetAwaiter().GetResult();
+			    }
+			    catch (AddressAccessDeniedException)
+			    {
+                    Console.WriteLine("Run this program under Administrator account or use the following command:");
+                    Console.WriteLine(@"netsh http add urlacl url=http://+:2707/ user=Everyone");
+			        return;
+			    }
 
 				Console.WriteLine("Press any key to exit...");
 
+                // simulate memory pressure
 				var random = new Random();
 				while (true)
 				{
