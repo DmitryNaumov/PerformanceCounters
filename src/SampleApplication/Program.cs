@@ -1,4 +1,5 @@
-﻿using System.ServiceModel;
+﻿using System.Diagnostics;
+using System.ServiceModel;
 using NeedfulThings.PerformanceCounters.WebApi;
 
 namespace SampleApplication
@@ -34,6 +35,8 @@ namespace SampleApplication
                     Console.WriteLine(@"netsh http add urlacl url=http://+:2707/ user=Everyone");
 			        return;
 			    }
+
+			    Process.Start("http://localhost:2707/counters");
 
 				Console.WriteLine("Press any key to exit...");
 
