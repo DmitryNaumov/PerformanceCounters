@@ -28,6 +28,10 @@ local.properties
 # PDT-specific
 .buildpath
 
+#################
+## IDEA
+#################
+.idea
 
 #################
 ## Visual Studio
@@ -40,6 +44,7 @@ local.properties
 *.suo
 *.user
 *.sln.docstates
+.vs/
 
 # Build results
 [Dd]ebug/

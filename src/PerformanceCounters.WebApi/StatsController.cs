@@ -49,7 +49,7 @@ namespace NeedfulThings.PerformanceCounters.WebApi
 			return _performanceCounters.FirstOrDefault(pcs => categoryName.Equals(pcs.CategoryName, StringComparison.OrdinalIgnoreCase));
 		}
 
-		private bool IsBaseCounter(IPerformanceCounter counter)
+		private bool IsBaseCounter(IReadOnlyPerformanceCounter counter)
 		{
 			switch (counter.CounterType)
 			{

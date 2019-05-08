@@ -6,6 +6,6 @@
 	{
 		string CategoryName { get; }
 
-		IReadOnlyCollection<IPerformanceCounter> Counters { get; }
+		IReadOnlyCollection<IReadOnlyPerformanceCounter> Counters { get; }
 	}
 }

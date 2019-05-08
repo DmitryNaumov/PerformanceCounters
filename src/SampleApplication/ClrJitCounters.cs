@@ -1,7 +1,8 @@
+using NeedfulThings.PerformanceCounters;
+
 namespace SampleApplication
 {
 	using System.Diagnostics;
-	using PerformanceCounters;
 
 	[PerformanceCounterCategory(".NET CLR Jit", PerformanceCounterCategoryType.MultiInstance)]
 	public interface ClrJitCounters : IPerformanceCounterSet
